@@ -118,31 +118,6 @@ public class MusicPlayerFragment extends Fragment implements IMusicPlayer{
         builder.create().show();
     }
 
-    private void searchSongs(){
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                musicPlayerPresenter.searchSongs(edtSearch.getText().toString().trim());
-            }
-        });
-        edtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.d("MusicPlayerFragment","beforeTextChanged");
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() == 0){
-                    musicPlayerPresenter.loadSongs();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.d("MusicPlayerFragment","afterTextChanged");
-            }
-        });
-    }
+    
 
 }
