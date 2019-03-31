@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/margin_padding_20dp">
+    <TextView
+        android:id="@+id/textview_item_lyrics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/margin_padding_15dp"
+        android:text="Bài hát"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/margin_padding_10dp"
+        android:layout_marginRight="@dimen/margin_padding_10dp"
+        android:textColor="@color/colorWhite"/>
+</LinearLayout>
