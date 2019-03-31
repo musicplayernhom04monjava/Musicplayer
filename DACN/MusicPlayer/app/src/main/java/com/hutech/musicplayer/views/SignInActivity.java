@@ -43,7 +43,88 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         connectionReceiver.unRegister();
     }
 
-    
+    private void setUp_View()
+    {
+        btn_Login = findViewById(R.id.btn_signin);
+        btn_Login.setOnClickListener(this);
+        btn_Register = findViewById(R.id.btn_register);
+        btn_Register.setOnClickListener(this);
+        edt_Username = findViewById(R.id.edt_username);
+        edt_Password = findViewById(R.id.edt_password);
+    }
+    private void checkLogin()
+    {
+        try{
+            String username = edt_Username.getText().toString();
+            String password = edt_Password.getText().toString();
+            ValidateSignIn validate = new ValidateSignIn(username, password);
+            validate.validate();
+            btn_Login.setEnabled(false);
+            mpresenter.login(username.trim(),password.trim());
+        } catch (ValidateUserException ex) {
+            Log.d("SignInActivity","Exception: "+ex.message());
+            super.dialog(ex.message());
+            //validateSignIn.getMessage();
+        }catch (ValidatePasswordException ex){
+            super.dialog(ex.message());
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    private void register()
+    {
+        try {
+            intent = new Intent(this, SignUpActivity.class);
+            this.startActivity(intent);
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    @Override
+    public void onClick(View view) {
+        switch (view.getId())
+        {
+            case R.id.btn_signin:
+
+                checkLogin();
+//                if(edt_Username.getText().length() > 0 && edt_Password.getText().length() > 0){
+//
+//                }else {
+//                    Toast.makeText(this,"Vui lòng nhập tên đăng nhập và mật khẩu",Toast.LENGTH_LONG).show();
+//                    btn_Login.setEnabled(true);
+//                }
+
+                break;
+            case R.id.btn_register:
+                register();
+                break;
+        }
+
+    }
+
+
+    @Override
+    public void loginFailure(ErrorCode errorCode) {
+        super.dialog(errorCode.message());
+        btn_Login.setEnabled(true);
+//       // Toast.makeText(this,errorCode.message(),Toast.LENGTH_LONG).show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(SignInActivity.this);
+//        builder.setTitle("Thông báo")
+//                .setMessage(errorCode.message())
+//                .setPositiveButton("Đồng ý",null)
+//                .show();
+    }
+
+    @Override
+    public void loginSuccess() {
+        btn_Login.setEnabled(true);
+        Log.d("SignInActivity","Login success");
+        Toast.makeText(this,"Đăng nhập thành công!",Toast.LENGTH_LONG);
+        intent = new Intent(this,DetailMusicActivity.class);
+        this.startActivity(intent);
+        finish();
+    }
 
     @Override
     public void onNetWorkStateChange(boolean isCheck) {
