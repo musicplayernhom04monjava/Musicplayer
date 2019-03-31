@@ -69,7 +69,37 @@ public class FirebaseManager {
     this.mifirebase = mifirebase;
 }
 
-    
+    public void login(String username, final String password){
+        reference.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    User user = new User();
+                    Log.d("FirebaseManager", String.format("fullname: %s", dataSnapshot.getValue()));
+                    user = dataSnapshot.getValue(User.class);
+//                    Log.d("FirebaseManager", String.format("Id: %s,Tên: %s, Email: %s, Username: %s, Password: %s, Giới tính: %s", user.getId().toString(),
+//                            user.getFullname().toString(), user.getEmail().toString(), user.getUsername().toString(), user.getPassword().toString(),
+//                            user.Gender().toString()));
+                    if(user.getPassword().equals(password))
+                    {
+                        mifirebase.fireBaseCallBack(user);
+                    }else {
+                        mifirebase.fireBaseErrorCallBack(ErrorCode.userNotExists);
+                    }
+
+                }
+                else{
+                    mifirebase.fireBaseErrorCallBack(ErrorCode.userNotExists);
+                    Log.d("FirebaseManager","Đăng nhập thất bại ");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("FirebaseManager","Đăng nhập thất bại "+databaseError.getMessage());
+            }
+        });
+		
     public void loadSongs()
     {
         reference.child("songs").addListenerForSingleValueEvent(new ValueEventListener() {
