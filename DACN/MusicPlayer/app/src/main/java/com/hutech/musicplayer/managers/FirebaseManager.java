@@ -69,42 +69,7 @@ public class FirebaseManager {
     this.mifirebase = mifirebase;
 }
 
-    public void login(String username, final String password){
-        reference.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    User user = new User();
-                    Log.d("FirebaseManager", String.format("fullname: %s", dataSnapshot.getValue()));
-                    user = dataSnapshot.getValue(User.class);
-//                    Log.d("FirebaseManager", String.format("Id: %s,Tên: %s, Email: %s, Username: %s, Password: %s, Giới tính: %s", user.getId().toString(),
-//                            user.getFullname().toString(), user.getEmail().toString(), user.getUsername().toString(), user.getPassword().toString(),
-//                            user.Gender().toString()));
-                    if(user.getPassword().equals(password))
-                    {
-                        mifirebase.fireBaseCallBack(user);
-                    }else {
-                        mifirebase.fireBaseErrorCallBack(ErrorCode.userIncorrect);
-                    }
-
-                }
-                else{
-                    mifirebase.fireBaseErrorCallBack(ErrorCode.userNotExists);
-                    Log.d("FirebaseManager","Đăng nhập thất bại ");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("FirebaseManager","Đăng nhập thất bại "+databaseError.getMessage());
-            }
-        });
-
-        //1.Request on Firebase.
-        //2. Load data from Firebase.
-        //3.Parse DataSnapshot as Object.
-        //4.Listener function on Presenter.
-    }
+    
     public void loadSongs()
     {
         reference.child("songs").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -141,71 +106,7 @@ public class FirebaseManager {
     }
 
 
-    public void createWithUser(final String userName,final String password,final String fullName)
-    {
-        reference.child("users").child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists())
-                {
-                    HashMap<String, Object> user = new HashMap<>();
-                    user.put(KEY_EMAIL,userName);
-                    user.put(KEY_FULL_NAME,fullName);
-                    user.put(KEY_PASSWORD,password);
-
-                    reference.child("users").child(userName).updateChildren(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            iSignUpActivity.onSuccess("Đăng ký thành công");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            iSignUpActivity.onFailure(ErrorCode.registerError);
-                        }
-                    });
-                }
-                else if(dataSnapshot.exists())
-                {
-                    iSignUpActivity.onFailure(ErrorCode.userExists);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void searchSong(String querySearch){
-        Query query = reference.child("songs").orderByChild("title").startAt(querySearch).endAt(querySearch+"/utf8ff");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Song song = new Song();
-                List<Song> songs = new ArrayList<>();
-                for (DataSnapshot data:dataSnapshot.getChildren()) {
-                    Log.d("FirebaseManager","data" + data.getValue());
-                    song = data.getValue(Song.class);
-                    songs.add(song);
-
-                }
-                if(songs.size() > 0){
-                    mifirebase.fireBaseCallBackSearchSongs(songs);
-                }else {
-                    mifirebase.fireBaseErrorCallBack(ErrorCode.searchFail);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                mifirebase.fireBaseErrorCallBack(ErrorCode.searchFail);
-            }
-        });
-
-    }
+    
 
 //    public void searchAlbum(String query){
 //        reference.child("songs").orderByChild("title").equalTo(query).addListenerForSingleValueEvent(new ValueEventListener() {
